@@ -55,11 +55,12 @@ export const boletos = async (
       };
 
       const dataBanco = {
-        amount: parseFloat(valor),
+        amount: Number(linhadigitavel.slice(37)),
         expirationDate: new Date(vencimento),
         barCode: barCode,
       };
       const salveBanco = await salvandoData(dataBanco);
+      console.log(salveBanco);
 
       return res.status(200).json(data);
     }

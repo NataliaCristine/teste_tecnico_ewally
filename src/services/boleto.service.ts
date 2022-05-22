@@ -109,14 +109,20 @@ export const salvandoBoleto = async (data: BoletoBody) => {
   return boleto;
 };
 
-export const deleteUser = async (userId: string) => {
-  const userRepository = getCustomRepository(BoletoRepository);
-  const user = await userRepository.findByUUID(userId);
-  if (user) {
-    await userRepository.remove(user);
-    return true;
-  } else return false;
-};
+// export const getBoleto = async (userId: string) => {
+//   const userRepository = getCustomRepository(BoletoRepository);
+//   const boleto = await userRepository.findByUUID(userId);
+//   if (boleto) {
+//     const output = {
+//       amount: boleto.amount,
+//       expirationDate: `${boleto.expirationDate.getFullYear()}-${
+//         boleto.expirationDate.getMonth() + 1
+//       }-${boleto.expirationDate.getDate()}`,
+//       barCode: boleto.barCode,
+//     };
+//     return output;
+//   } else return false;
+// };
 // campo 1 posição 0-8 tirar o digito verificador posição 9
 // campo 2 posição 10 -19 o digito verificador posição 20
 // campo 3 posição 21-30 o digito posição 31
