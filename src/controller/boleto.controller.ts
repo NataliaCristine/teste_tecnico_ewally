@@ -31,55 +31,59 @@ export const boletos = async (
 };
 
 const controllerBoleto = async (linhadigitavel: string) => {
-  let barCode = "";
-  const valorCampo1 = linhadigitavel.slice(0, 10);
-  metodoDigitoVerificavelBoletoBancario(valorCampo1);
-  const campo2 = metodoDigitoVerificavelBoletoBancario(
-    linhadigitavel.slice(10, 21)
-  );
-  const campo3 = metodoDigitoVerificavelBoletoBancario(
-    linhadigitavel.slice(21, 32)
-  );
-  const campo5 = linhadigitavel.slice(33);
-  let vencimento = "";
-  let valor = "";
-  if (campo5.length >= 14) {
-    vencimento = dataVencimento(linhadigitavel.slice(33, 37));
-    valor = (Number(linhadigitavel.slice(37)) / 100).toFixed(2);
-  }
+  try {
+    let barCode = "";
+    const valorCampo1 = linhadigitavel.slice(0, 10);
+    metodoDigitoVerificavelBoletoBancario(valorCampo1);
+    const campo2 = metodoDigitoVerificavelBoletoBancario(
+      linhadigitavel.slice(10, 21)
+    );
+    const campo3 = metodoDigitoVerificavelBoletoBancario(
+      linhadigitavel.slice(21, 32)
+    );
+    const campo5 = linhadigitavel.slice(33);
+    let vencimento = "";
+    let valor = "";
+    if (campo5.length >= 14) {
+      vencimento = dataVencimento(linhadigitavel.slice(33, 37));
+      valor = (Number(linhadigitavel.slice(37)) / 100).toFixed(2);
+    }
 
-  var barcodeParcial =
-    linhadigitavel.slice(0, 4) +
-    campo5 +
-    linhadigitavel.slice(4, 9) +
-    campo2 +
-    campo3;
+    var barcodeParcial =
+      linhadigitavel.slice(0, 4) +
+      campo5 +
+      linhadigitavel.slice(4, 9) +
+      campo2 +
+      campo3;
 
-  const digito = digitoverificador(barcodeParcial);
-  if (digito != linhadigitavel[32]) {
+    const digito = digitoverificador(barcodeParcial);
+    if (digito != linhadigitavel[32]) {
+      throw new AppError("Digitos inválidos", 400);
+    }
+
+    barCode = barcodeParcial.slice(0, 4) + digito + barcodeParcial.slice(4);
+
+    const data = {
+      amount: valor,
+      expirationDate: vencimento,
+      barCode: barCode,
+    };
+
+    const dataBanco = {
+      amount: Number(linhadigitavel.slice(37)),
+      expirationDate: new Date(vencimento),
+      barCode: barCode,
+    };
+    const salveBanco = await salvandoData(dataBanco);
+    if (salveBanco) {
+      const getBoletoBanco = await getBoleto(salveBanco.barCode);
+      console.log(getBoletoBanco);
+    }
+
+    return data;
+  } catch (err) {
     throw new AppError("Digitos inválidos", 400);
   }
-
-  barCode = barcodeParcial.slice(0, 4) + digito + barcodeParcial.slice(4);
-
-  const data = {
-    amount: valor,
-    expirationDate: vencimento,
-    barCode: barCode,
-  };
-
-  const dataBanco = {
-    amount: Number(linhadigitavel.slice(37)),
-    expirationDate: new Date(vencimento),
-    barCode: barCode,
-  };
-  const salveBanco = await salvandoData(dataBanco);
-  if (salveBanco) {
-    const getBoletoBanco = await getBoleto(salveBanco.barCode);
-    console.log(getBoletoBanco);
-  }
-
-  return data;
 };
 
 const controllerConvenio = (linhaDigitavel: string) => {

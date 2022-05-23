@@ -61,30 +61,33 @@ export const digitoverificador = (data: string) => {
 };
 
 export const salvandoData = async (data: BoletoBody) => {
-  const saida = await salvando(data);
-  return saida;
-};
+  try {
+    const boleotRepository = getCustomRepository(BoletoRepository);
+    const boleto = await boleotRepository.createBoleto(data);
 
-export const salvando = async (data: BoletoBody) => {
-  const boleotRepository = getCustomRepository(BoletoRepository);
-  const boleto = await boleotRepository.createBoleto(data);
-
-  return boleto;
+    return boleto;
+  } catch (err) {
+    throw new AppError("Digitos inválidos", 400);
+  }
 };
 
 export const getBoleto = async (barCode: string) => {
-  const userRepository = getCustomRepository(BoletoRepository);
-  const boleto = await userRepository.findByCode(barCode);
-  if (boleto) {
-    const output = {
-      amount: (boleto.amount / 100).toFixed(2),
-      expirationDate: `${boleto.expirationDate.getFullYear()}-${
-        boleto.expirationDate.getMonth() + 1
-      }-${boleto.expirationDate.getDate()}`,
-      barCode: boleto.barCode,
-    };
-    return output;
-  } else return false;
+  try {
+    const userRepository = getCustomRepository(BoletoRepository);
+    const boleto = await userRepository.findByCode(barCode);
+    if (boleto) {
+      const output = {
+        amount: (boleto.amount / 100).toFixed(2),
+        expirationDate: `${boleto.expirationDate.getFullYear()}-${
+          boleto.expirationDate.getMonth() + 1
+        }-${boleto.expirationDate.getDate()}`,
+        barCode: boleto.barCode,
+      };
+      return output;
+    }
+  } catch (err) {
+    throw new AppError("Digitos inválidos", 400);
+  }
 };
 // campo 1 posição 0-8 tirar o digito verificador posição 9
 // campo 2 posição 10 -19 o digito verificador posição 20

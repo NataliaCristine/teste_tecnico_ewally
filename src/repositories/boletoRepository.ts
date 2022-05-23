@@ -12,7 +12,7 @@ class BoletoRepository extends Repository<Boleto> {
   public async createBoleto(data: BoletoBody): Promise<Boleto | undefined> {
     const { amount, expirationDate, barCode } = data;
     const boleto = this.create({ amount, expirationDate, barCode });
-    this.save(boleto);
+    await this.save(boleto);
     return boleto;
   }
   public async findByCode(
