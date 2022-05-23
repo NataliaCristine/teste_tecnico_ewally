@@ -23,7 +23,7 @@ Em seguida rode o comando:
 Necessário ter um banco de dados em posgresSql criado e copiar o arqquivo .env.example renomeando para .env
 Pode utilizar este comando para copiar:
 
-> cp .env.example .env
+> cp  .env.example  .env
 
 No arquivo .env será colocado as credenciais do banco.
 
