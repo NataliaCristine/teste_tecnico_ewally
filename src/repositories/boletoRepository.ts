@@ -15,10 +15,14 @@ class BoletoRepository extends Repository<Boleto> {
     this.save(boleto);
     return boleto;
   }
-  public async findByUUID(
-    uuid: string | undefined
+  public async findByCode(
+    barCode: string | undefined
   ): Promise<Boleto | undefined> {
-    const boleto = await this.findOne(uuid);
+    const boleto = await this.findOne({
+      where: {
+        barCode,
+      },
+    });
 
     return boleto;
   }
