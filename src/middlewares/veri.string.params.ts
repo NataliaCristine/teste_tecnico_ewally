@@ -12,7 +12,12 @@ export const verificandoStringParams = async (
     for (let i = 0; i < uuid.length; i++) {
       let boleano = num.includes(uuid[i]);
       if (!boleano) {
-        return next(new AppError("Digite apenas os numeros", 400));
+        return next(
+          new AppError(
+            "Digite apenas os números sem espaços, barras, pontos ou traços",
+            400
+          )
+        );
       }
     }
   }
