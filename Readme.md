@@ -20,7 +20,7 @@ Em seguida rode o comando:
 
 > yarn
 
-Necessário ter um banco de dados em posgresSql criado e copiar o arqquivo .env.example renomeando para .env
+Necessário ter um banco de dados em posgreSql criado e copiar o arqquivo .env.example renomeando para .env
 Pode utilizar este comando para copiar:
 
 > cp  .env.example  .env
